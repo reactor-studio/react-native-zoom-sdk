@@ -2,6 +2,9 @@
 #import "RNMobileRTC.h"
 #import <MobileRTC/MobileRTC.h>
 
+// TODO (Ivan): export user type consants
+// TODO (Ivan): export error codes
+
 NSString * const AuthError_toString[] = {
     @"Auth Success",
     @"Key or Secret is empty",
@@ -15,6 +18,8 @@ NSString * const AuthError_toString[] = {
 {
     RCTPromiseResolveBlock _initResolver;
     RCTPromiseRejectBlock _initRejecter;
+    RCTPromiseResolveBlock _meetingResolver;
+    RCTPromiseRejectBlock _meetingRejecter;
     NSString *clientKey;
     NSString *clientSecret;
 }
@@ -36,6 +41,51 @@ RCT_EXPORT_METHOD(initialize:(NSString *)key secret:(NSString *)secret domain:(N
     _initResolver = resolve;
     _initRejecter = reject;
     [self sdkAuth];
+}
+
+RCT_EXPORT_METHOD(startMeeting:(NSDictionary *) options resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+    MobileRTCMeetingService *ms = [[MobileRTC sharedRTC] getMeetingService];
+    if (ms){
+        ms.delegate = self;
+
+        NSDictionary *paramDict = @{
+                                    kMeetingParam_UserID:options["userId"],
+                                    kMeetingParam_UserToken:options["userToken"],
+                                    kMeetingParam_UserType:options["userType"],
+                                    kMeetingParam_Username:options["userName"],
+                                    kMeetingParam_MeetingNumber:options["meetNumber"],
+                                    kMeetingParam_IsAppShare:@(appShare),
+                                    kMeetingParam_ParticipantID:options["participantId"],
+                                    };
+
+        MobileRTCMeetError ret = [ms startMeetingWithDictionary:paramDict];
+        NSLog(@"onMeetNow ret:%d", ret);
+        _meetingResolver = resolve;
+        _meetingRejecter = reject;
+    }
+}
+
+RCT_EXPORT_METHOD(joinMeeting:(NSDictionary *) options resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+    if (![meetingNo length])
+        return;
+    
+    MobileRTCMeetingService *ms = [[MobileRTC sharedRTC] getMeetingService];
+    if (ms)
+    {
+        ms.delegate = self;
+        
+        //For Join a meeting with password
+        NSDictionary *paramDict = @{
+                                    kMeetingParam_Username:options["userName"],
+                                    kMeetingParam_MeetingNumber:options["meetingNumber"],
+                                    kMeetingParam_MeetingPassword:options["pwd"],
+                                    kMeetingParam_ParticipantID:options["participantId"],
+                                    };
+        MobileRTCMeetError ret = [ms joinMeetingWithDictionary:paramDict];
+        NSLog(@"onJoinaMeeting ret:%d", ret);
+    }
 }
 
 #pragma mark - Auth Delegate
@@ -84,6 +134,65 @@ RCT_EXPORT_METHOD(initialize:(NSString *)key secret:(NSString *)secret domain:(N
 - (void)onMobileRTCLogoutReturn:(NSInteger)returnValue
 {
     NSLog(@"onMobileRTCLogoutReturn");
+}
+
+#pragma mark - Meeting Service Delegate
+
+- (void)onMeetingReturn:(MobileRTCMeetError)error internalError:(NSInteger)internalError
+{
+    NSLog(@"onMeetingReturn:%d, internalError:%zd", error, internalError);
+    if (error != MobileRTCMeetError_Success)
+    {
+        _meetingRejecter(@"error", @"error", nil);
+    }
+    else
+    {
+        _meetingResolver(@"Meeting!");
+    }
+    
+    _meetingResolver = nil;
+    _meetingRejecter = nil;
+    return;
+}
+
+- (void)onMeetingError:(NSInteger)error message:(NSString*)message
+{
+    NSLog(@"onMeetingError:%zd, message:%@", error, message);
+}
+
+- (void)onMeetingStateChange:(MobileRTCMeetingState)state
+{
+    NSLog(@"onMeetingStateChange:%d", state);
+    
+    MobileRTCMeetingService *ms = [[MobileRTC sharedRTC] getMeetingService];
+    BOOL inAppShare = [ms isDirectAppShareMeeting] && (state == MobileRTCMeetingState_InMeeting);
+    
+    if (state == MobileRTCMeetingState_Idle)
+    {
+        // TODO:
+    }
+    
+    if (state != MobileRTCMeetingState_InMeeting)
+    {
+        // TODO:
+    }
+}
+
+- (void)onMeetingReady
+{
+    MobileRTCMeetingService *ms = [[MobileRTC sharedRTC] getMeetingService];
+    if ([ms isDirectAppShareMeeting])
+    {
+        if ([ms isStartingShare] || [ms isViewingShare])
+        {
+            NSLog(@"There exist an ongoing share");
+            [ms showMobileRTCMeeting:nil];
+            return;
+        }
+        
+        BOOL ret = [ms startAppShare];
+        NSLog(@"Start App Share... ret:%zd", ret);
+    }
 }
 
 @end

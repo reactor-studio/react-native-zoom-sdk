@@ -6,7 +6,7 @@
 #endif
 #import <MobileRTC/MobileRTCAuthService.h>
 
-@interface RNMobileRTC : NSObject <RCTBridgeModule, MobileRTCAuthDelegate>
+@interface RNMobileRTC : NSObject <RCTBridgeModule, MobileRTCAuthDelegate, MobileRTCMeetingServiceDelegate>
 
 @end
   

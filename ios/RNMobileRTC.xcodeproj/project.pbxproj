@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		2770A65F20120EA6006EF37E /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2770A65D20120E88006EF37E /* VideoToolbox.framework */; };
 		2770A66020120EB1006EF37E /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2770A65E20120E94006EF37E /* CoreBluetooth.framework */; };
-		2770A66220120ECA006EF37E /* MobileRTCResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 2770A65420120A65006EF37E /* MobileRTCResources.bundle */; };
 		B3E7B58A1CC2AC0600A0062D /* RNMobileRTC.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* RNMobileRTC.m */; };
 /* End PBXBuildFile section */
 
@@ -27,7 +26,6 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRNMobileRTC.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNMobileRTC.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		2770A65420120A65006EF37E /* MobileRTCResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = MobileRTCResources.bundle; path = ../../lib/MobileRTCResources.bundle; sourceTree = "<group>"; };
 		2770A65D20120E88006EF37E /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/Frameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
 		2770A65E20120E94006EF37E /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 		B3E7B5881CC2AC0600A0062D /* RNMobileRTC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNMobileRTC.h; sourceTree = "<group>"; };
@@ -60,7 +58,6 @@
 			children = (
 				2770A65E20120E94006EF37E /* CoreBluetooth.framework */,
 				2770A65D20120E88006EF37E /* VideoToolbox.framework */,
-				2770A65420120A65006EF37E /* MobileRTCResources.bundle */,
 			);
 			path = Frameworks;
 			sourceTree = "<group>";
@@ -132,7 +129,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2770A66220120ECA006EF37E /* MobileRTCResources.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

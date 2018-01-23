@@ -1,6 +1,5 @@
 
 #import "RNMobileRTC.h"
-#import <MobileRTC/MobileRTC.h>
 
 // TODO (Ivan): export user type consants
 // TODO (Ivan): export error codes
@@ -48,17 +47,17 @@ RCT_EXPORT_METHOD(startMeeting:(NSDictionary *) options resolver:(RCTPromiseReso
     MobileRTCMeetingService *ms = [[MobileRTC sharedRTC] getMeetingService];
     if (ms){
         ms.delegate = self;
-
+        
         NSDictionary *paramDict = @{
-                                    kMeetingParam_UserID:options["userId"],
-                                    kMeetingParam_UserToken:options["userToken"],
-                                    kMeetingParam_UserType:options["userType"],
-                                    kMeetingParam_Username:options["userName"],
-                                    kMeetingParam_MeetingNumber:options["meetNumber"],
-                                    kMeetingParam_IsAppShare:@(appShare),
-                                    kMeetingParam_ParticipantID:options["participantId"],
+                                    kMeetingParam_UserID:options[@"userId"],
+                                    kMeetingParam_UserToken:options[@"userToken"],
+                                    kMeetingParam_UserType:options[@"userType"],
+                                    kMeetingParam_Username:options[@"userName"],
+                                    kMeetingParam_MeetingNumber:options[@"meetNumber"],
+                                    kMeetingParam_IsAppShare:options[@"appShare"],
+                                    kMeetingParam_ParticipantID:options[@"participantId"],
                                     };
-
+        
         MobileRTCMeetError ret = [ms startMeetingWithDictionary:paramDict];
         NSLog(@"onMeetNow ret:%d", ret);
         _meetingResolver = resolve;
@@ -68,24 +67,25 @@ RCT_EXPORT_METHOD(startMeeting:(NSDictionary *) options resolver:(RCTPromiseReso
 
 RCT_EXPORT_METHOD(joinMeeting:(NSDictionary *) options resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    if (![meetingNo length])
+    if (![options[@"meetingNumber"] length])
         return;
     
     MobileRTCMeetingService *ms = [[MobileRTC sharedRTC] getMeetingService];
     if (ms)
     {
         ms.delegate = self;
-        
         //For Join a meeting with password
         NSDictionary *paramDict = @{
-                                    kMeetingParam_Username:options["userName"],
-                                    kMeetingParam_MeetingNumber:options["meetingNumber"],
-                                    kMeetingParam_MeetingPassword:options["pwd"],
-                                    kMeetingParam_ParticipantID:options["participantId"],
+                                    kMeetingParam_Username:options[@"userName"],
+                                    kMeetingParam_MeetingNumber:options[@"meetingNumber"],
+                                    kMeetingParam_MeetingPassword:options[@"pwd"],
+                                    kMeetingParam_ParticipantID:options[@"participantId"],
                                     };
         MobileRTCMeetError ret = [ms joinMeetingWithDictionary:paramDict];
         NSLog(@"onJoinaMeeting ret:%d", ret);
     }
+    _meetingResolver = resolve;
+    _meetingRejecter = reject;
 }
 
 #pragma mark - Auth Delegate
@@ -195,5 +195,54 @@ RCT_EXPORT_METHOD(joinMeeting:(NSDictionary *) options resolver:(RCTPromiseResol
     }
 }
 
+- (void)onAppShareSplash
+{
+    
+}
+
+- (void)onClickedShareButton
+{
+    MobileRTCMeetingService *ms = [[MobileRTC sharedRTC] getMeetingService];
+    if (ms)
+    {
+        if ([ms isStartingShare] || [ms isViewingShare])
+        {
+            NSLog(@"There exist an ongoing share");
+            return;
+        }
+        
+        [ms hideMobileRTCMeeting:^(void){
+            [ms startAppShare];
+        }];
+    }
+}
+
+- (void)onOngoingShareStopped
+{
+    NSLog(@"There does not exist ongoing share");
+}
+
+- (void)onJBHWaitingWithCmd:(JBHCmd)cmd
+{
+    
+}
+
+- (void)onClickedInviteButton:(UIViewController*)parentVC
+{
+    
+}
+
+- (void)onClickedDialOut:(UIViewController*)parentVC isCallMe:(BOOL)me
+{
+    NSLog(@"Dial out result");
+}
+
+- (void)onDialOutStatusChanged:(DialOutStatus)status
+{
+    NSLog(@"onDialOutStatusChanged: %zd", status);
+}
+
+
 @end
+
 

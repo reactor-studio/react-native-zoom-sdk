@@ -1,8 +1,8 @@
 
 {
-  "name": "react-native-mobile-rtc",
-  "version": "0.0.1",
-  "description": "",
+  "name": "react-native-zoom-sdk",
+  "version": "0.9.0",
+  "description": "Zoom.us SDK bridge for React Native",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -12,8 +12,8 @@
     "Zoom MobileRTC SDK",
     "video calls"
   ],
-  "author": "sohotsoup",
-  "license": "",
+  "author": "Ivan Vukovic <3.14wee@gmail.com>",
+  "license": "MIT",
   "peerDependencies": {
     "react-native": "~0.50.0"
   }

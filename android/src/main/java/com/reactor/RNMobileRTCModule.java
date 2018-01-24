@@ -19,6 +19,9 @@ import us.zoom.sdk.ZoomSDKInitializeListener;
 public class RNMobileRTCModule extends ReactContextBaseJavaModule implements MeetingServiceListener, ZoomSDKInitializeListener {
 
   private final ReactApplicationContext reactContext;
+  private final String E_NO_MEETING_NUMBER = "E_NO_MEETING_NUMBER";
+  private final String E_INVALID_MEETING_NUMBER = "E_INVALID_MEETING_NUMBER";
+  private final String E_SDK_NOT_INITIALIZED = "E_SDK_NOT_INITIALIZED";
   private Promise mPromise;
 
   public RNMobileRTCModule(ReactApplicationContext reactContext) {
@@ -52,20 +55,22 @@ public class RNMobileRTCModule extends ReactContextBaseJavaModule implements Mee
     }
   }
 
-  public void onClickBtnJoinMeeting(View view) {
-		String meetingNo = mEdtMeetingNo.getText().toString().trim();
-		String meetingPassword = mEdtMeetingPassword.getText().toString().trim();
+  @ReactMethod
+  public void joinMeeting(ReadableMap options, Promise promise) {
+		String meetingNo = options.getString("meetingNumber");
+    String userName = options.getString("userName");
+		String meetingPassword = options.getString("pwd");
 		
 		if(meetingNo.length() == 0) {
-			Toast.makeText(this, "You need to enter a meeting number which you want to join.", Toast.LENGTH_LONG).show();
-			return;
+			promise.reject(E_NO_MEETING_NUMBER, "You need to enter a scheduled meeting number.");
+      return;
 		}
 		
 		ZoomSDK zoomSDK = ZoomSDK.getInstance();
 		
 		if(!zoomSDK.isInitialized()) {
-			Toast.makeText(this, "ZoomSDK has not been initialized successfully", Toast.LENGTH_LONG).show();
-			return;
+			promise.reject(E_SDK_NOT_INITIALIZED, "ZoomSDK has not been initialized successfully");
+      return;
 		}
 		
 		MeetingService meetingService = zoomSDK.getMeetingService();
@@ -87,24 +92,25 @@ public class RNMobileRTCModule extends ReactContextBaseJavaModule implements Mee
 //		opts.no_meeting_error_message = true;
 //		opts.participant_id = "participant id";
 
-		int ret = meetingService.joinMeeting(this, meetingNo, DISPLAY_NAME, meetingPassword, opts);
+		int ret = meetingService.joinMeeting(this, meetingNo, userName, meetingPassword, opts);
 		
-		Log.i(TAG, "onClickBtnJoinMeeting, ret=" + ret);
+		Log.i(TAG, "onJoinMeeting, ret=" + ret);
 	}
 	
-	public void onClickBtnStartMeeting(View view) {
-		String meetingNo = mEdtMeetingNo.getText().toString().trim();
+  @ReactMethod
+	public void startMeeting(ReadableMap options, Promise promise) {
+		String meetingNo = options.getString("meetingNumber");
 		
 		if(meetingNo.length() == 0) {
-			Toast.makeText(this, "You need to enter a scheduled meeting number.", Toast.LENGTH_LONG).show();
-			return;
+			promise.reject(E_NO_MEETING_NUMBER, "You need to enter a scheduled meeting number.");
+      return;
 		}
 		
 		ZoomSDK zoomSDK = ZoomSDK.getInstance();
-
+		
 		if(!zoomSDK.isInitialized()) {
-			Toast.makeText(this, "ZoomSDK has not been initialized successfully", Toast.LENGTH_LONG).show();
-			return;
+			promise.reject(E_SDK_NOT_INITIALIZED, "ZoomSDK has not been initialized successfully");
+      return;
 		}
 		
 		final MeetingService meetingService = zoomSDK.getMeetingService();
@@ -114,16 +120,16 @@ public class RNMobileRTCModule extends ReactContextBaseJavaModule implements Mee
 			try {
 				lMeetingNo = Long.parseLong(meetingNo);
 			} catch (NumberFormatException e) {
-				Toast.makeText(this, "Invalid meeting number: " + meetingNo, Toast.LENGTH_LONG).show();
-				return;
+				promise.reject(E_NO_MEETING_NUMBER, "Invalid meeting number: " + meetingNo);
+        return;
 			}
 			
 			if(meetingService.getCurrentRtcMeetingNumber() == lMeetingNo) {
-				meetingService.returnToMeeting(this);
+				meetingService.returnToMeeting(this.getCurrentActivity());
 				return;
 			}
 			
-			new AlertDialog.Builder(this)
+			new AlertDialog.Builder(this.getCurrentActivity())
 				.setMessage("Do you want to leave current meeting and start another?")
 				.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 					
@@ -161,8 +167,6 @@ public class RNMobileRTCModule extends ReactContextBaseJavaModule implements Mee
 //		opts.no_meeting_error_message = true;
 		
 		int ret = meetingService.startMeeting(this, USER_ID, ZOOM_TOKEN, STYPE, meetingNo, DISPLAY_NAME, opts);
-		
-		Log.i(TAG, "onClickBtnStartMeeting, ret=" + ret);
 	}
 
   // Listeners
@@ -183,12 +187,10 @@ public class RNMobileRTCModule extends ReactContextBaseJavaModule implements Mee
 				+ ", internalErrorCode=" + internalErrorCode);
 		
 		if(meetingEvent == MeetingEvent.MEETING_CONNECT_FAILED && errorCode == MeetingError.MEETING_ERROR_CLIENT_INCOMPATIBLE) {
-			Toast.makeText(this, "Version of ZoomSDK is too low!", Toast.LENGTH_LONG).show();
 		}
 		
 		if(mbPendingStartMeeting && meetingEvent == MeetingEvent.MEETING_DISCONNECTED) {
 			mbPendingStartMeeting = false;
-			onClickBtnStartMeeting(null);
 		}
   }
 }

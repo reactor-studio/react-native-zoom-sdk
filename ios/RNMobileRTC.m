@@ -1,8 +1,6 @@
 
 #import "RNMobileRTC.h"
 
-// TODO (Ivan): export error codes
-
 NSString * const AuthError_toString[] = {
     @"Auth Success",
     @"Key or Secret is empty",

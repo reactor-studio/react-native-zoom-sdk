@@ -22,6 +22,7 @@ public class RNMobileRTCModule extends ReactContextBaseJavaModule implements Mee
   private final String E_NO_MEETING_NUMBER = "E_NO_MEETING_NUMBER";
   private final String E_INVALID_MEETING_NUMBER = "E_INVALID_MEETING_NUMBER";
   private final String E_SDK_NOT_INITIALIZED = "E_SDK_NOT_INITIALIZED";
+  private boolean mbPendingStartMeeting = false;
   private Promise mPromise;
 
   public RNMobileRTCModule(ReactApplicationContext reactContext) {

@@ -1,5 +1,5 @@
 
-# react-native-mobile-rtc
+# react-native-zoom-sdk
 
 ## Getting started
 
@@ -8,13 +8,13 @@ place **iOS SDK** in `ios/lib/` and **Android SDK** in `android` directory of yo
 
 After that install the package with:
 
-`$ npm install react-native-mobile-rtc --save`
+`$ npm install react-native-zoom-sdk --save`
 
 ### Mostly automatic installation
 
 Run the `link` command. It will execute other SDK config to your app.
 
-`$ react-native link react-native-mobile-rtc`
+`$ react-native link react-native-zoom-sdk`
 
 ### Manual installation
 
@@ -22,7 +22,7 @@ Run the `link` command. It will execute other SDK config to your app.
 #### iOS
 
 1. In XCode, in the project navigator, right click `Libraries` ➜ `Add Files to [your project's name]`
-2. Go to `node_modules` ➜ `react-native-mobile-rtc` and add `RNMobileRTC.xcodeproj`
+2. Go to `node_modules` ➜ `react-native-zoom-sdk` and add `RNMobileRTC.xcodeproj`
 3. In XCode, in the project navigator, select your project. Add `libRNMobileRTC.a` to your project's `Build Phases` ➜ `Link Binary With Libraries`
 4. Run your project (`Cmd+R`)
 
@@ -33,12 +33,12 @@ Run the `link` command. It will execute other SDK config to your app.
   - Add `new RNMobileRtcPackage()` to the list returned by the `getPackages()` method
 2. Append the following lines to `android/settings.gradle`:
   	```
-  	include ':react-native-mobile-rtc'
-  	project(':react-native-mobile-rtc').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-mobile-rtc/android')
+  	include ':react-native-zoom-sdk'
+  	project(':react-native-zoom-sdk').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-zoom-sdk/android')
   	```
 3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
   	```
-      compile project(':react-native-mobile-rtc')
+      compile project(':react-native-zoom-sdk')
   	```
 
 ## Methods
@@ -89,7 +89,7 @@ RNMobileRTC.joinMeeting({ meetingNumber: '0123456789', userName: 'Nana', })
 
 ## Usage
 ```javascript
-import RNMobileRTC from 'react-native-mobile-rtc';
+import RNMobileRTC from 'react-native-zoom-sdk';
 
 export default class App extends Component<{}> {
   constructor() {

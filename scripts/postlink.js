@@ -18,6 +18,8 @@ frameworks.map(framework => {
   });
 });
 
+pbxProject.addToFrameworkSearchPaths('$(PROJECT_DIR)/**')
+
 fs.writeFileSync(
   projectPath,
   pbxProject.writeSync()

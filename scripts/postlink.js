@@ -2,16 +2,21 @@
 
 const xcode = require('xcode');
 const fs = require('fs');
-const packageJson = require('./package.json');
+const packageJson = require('../../../package.json');
 
 const projectName = packageJson.name;
-const projectPath = `./ios/${projectName}.xcodeproj`;
+const projectPath = `./ios/${projectName}.xcodeproj/project.pbxproj`;
 const xcodeProject = xcode.project(projectPath);
 const pbxProject = xcodeProject.parseSync();
+const target = pbxProject.getFirstTarget().uuid;
+const frameworks = ['libsqlite3.tbd', 'libstdc++.6.0.9.tbd', 'libz.1.2.5.tbd'];
 console.log('Adding frameworks...');
-pbxProject.addFramework('libsqlite3.tbd');
-pbxProject.addFramework('libstdc++.6.0.9.tbd');
-pbxProject.addFramework('libz.1.2.5.tbd');
+frameworks.map(framework => {
+  pbxProject.addFramework(framework, { link: true, target });
+  pbxProject.addStaticLibrary(framework, {
+    target
+  });
+});
 
 fs.writeFileSync(
   projectPath,

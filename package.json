@@ -12,6 +12,10 @@
     "Zoom MobileRTC SDK",
     "video calls"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/reactor-studio/react-native-zoom-sdk"
+  },
   "author": "Ivan Vukovic <3.14wee@gmail.com>",
   "license": "MIT",
   "peerDependencies": {

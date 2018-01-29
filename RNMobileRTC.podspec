@@ -3,10 +3,10 @@ require 'json'
 package_json = JSON.parse(File.read('package.json'))
 
 Pod::Spec.new do |s|
-  s.name         = package_json["name"]
+  s.name         = "RNMobileRTC"
   s.version      = package_json["version"]
   s.summary      = package_json["description"]
-  s.homepage     = ""
+  s.homepage     = "https://github.com/reactor-studio/react-native-zoom-sdk"
   s.license      = package_json["license"]
   s.author       = { "Ivan Vukovic" => "3.14wee@gmail.com" }
   s.platform     = :ios, "7.0"

@@ -1,11 +1,22 @@
 
 package com.reactor;
 
+import android.util.Log;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.ReadableMap;
+import us.zoom.sdk.JoinMeetingOptions;
+import us.zoom.sdk.StartMeetingOptions;
 import us.zoom.sdk.MeetingError;
 import us.zoom.sdk.MeetingEvent;
 import us.zoom.sdk.MeetingOptions;
@@ -41,7 +52,7 @@ public class RNMobileRTCModule extends ReactContextBaseJavaModule implements Mee
     mPromise = promise;
 
     if (!zoomSDK.isInitialized()) {
-      zoomSDK.initialize(initialize(this.getCurrentActivity(), sdkKey, sdkSecret, sdkDomain, this);
+      zoomSDK.initialize(this.getCurrentActivity(), sdkKey, sdkSecret, sdkDomain, this);
     } else {
       startMeetingService();
       promise.resolve("Success!");
@@ -50,7 +61,7 @@ public class RNMobileRTCModule extends ReactContextBaseJavaModule implements Mee
 
   private void startMeetingService() {
     ZoomSDK zoomSDK = ZoomSDK.getInstance();
-    meetingService = zoomSDK.getMeetingService();
+    MeetingService meetingService = zoomSDK.getMeetingService();
     if (meetingService != null) {
       meetingService.addListener(this);
     }
@@ -93,14 +104,16 @@ public class RNMobileRTCModule extends ReactContextBaseJavaModule implements Mee
 //		opts.no_meeting_error_message = true;
 //		opts.participant_id = "participant id";
 
-		int ret = meetingService.joinMeeting(this, meetingNo, userName, meetingPassword, opts);
-		
-		Log.i(TAG, "onJoinMeeting, ret=" + ret);
+		int ret = meetingService.joinMeeting(this.getCurrentActivity(), meetingNo, userName, meetingPassword, opts);
 	}
 	
   @ReactMethod
 	public void startMeeting(ReadableMap options, Promise promise) {
 		String meetingNo = options.getString("meetingNumber");
+		String userName = options.getString("userName");
+		int userType = options.getInt("userType");
+		String userId = options.getString("userId");
+		String userToken = options.getString("userToken");
 		
 		if(meetingNo.length() == 0) {
 			promise.reject(E_NO_MEETING_NUMBER, "You need to enter a scheduled meeting number.");
@@ -167,14 +180,14 @@ public class RNMobileRTCModule extends ReactContextBaseJavaModule implements Mee
 //		opts.meeting_views_options = MeetingViewsOptions.NO_BUTTON_SHARE + MeetingViewsOptions.NO_BUTTON_VIDEO;
 //		opts.no_meeting_error_message = true;
 		
-		int ret = meetingService.startMeeting(this, USER_ID, ZOOM_TOKEN, STYPE, meetingNo, DISPLAY_NAME, opts);
+		int ret = meetingService.startMeeting(this.getCurrentActivity(), userName, userToken, userType, meetingNo, userName, opts);
 	}
 
   // Listeners
   @Override
   public void onZoomSDKInitializeResult(int errorCode, int internalErrorCode) {
     if (errorCode != ZoomError.ZOOM_ERROR_SUCCESS) {
-      mPromise.reject();
+      mPromise.reject("" + errorCode);
     } else {
       startMeetingService();
       mPromise.resolve("Success!");
@@ -182,11 +195,7 @@ public class RNMobileRTCModule extends ReactContextBaseJavaModule implements Mee
   }
 
   @Override
-	public void onMeetingEvent(int meetingEvent, int errorCode, int internalErrorCode) {
-		
-		Log.i(TAG, "onMeetingEvent, meetingEvent=" + meetingEvent + ", errorCode=" + errorCode
-				+ ", internalErrorCode=" + internalErrorCode);
-		
+	public void onMeetingEvent(int meetingEvent, int errorCode, int internalErrorCode) {		
 		if(meetingEvent == MeetingEvent.MEETING_CONNECT_FAILED && errorCode == MeetingError.MEETING_ERROR_CLIENT_INCOMPATIBLE) {
 		}
 		

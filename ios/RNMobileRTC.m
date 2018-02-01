@@ -96,30 +96,63 @@ RCT_EXPORT_METHOD(joinMeeting:(NSDictionary *) options resolver:(RCTPromiseResol
                      @"SSO_USER": @(MobileRTCUserType_SSOUser),
                      },
              @"MeetingError": @{
-                     //Incorrect meeting number
-                     @"INCORRECT_MEETING_NUMBER": @(MobileRTCMeetError_IncorrectMeetingNumber),
-                     //Meeting Timeout
-                     @"MEETING_TIMEOUT": @(MobileRTCMeetError_MeetingTimeout),
-                     //Network Unavailable
-                     @"NETWORK_UNAVAILABLE": @(MobileRTCMeetError_NetworkUnavailable),
-                     //Client Version Incompatible
-                     @"CLIENT_VERSION_INCOMPATIBLE": @(MobileRTCMeetError_MeetingClientIncompatible),
-                     //User is Full
-                     @"USER_FULL": @(MobileRTCMeetError_UserFull),
-                     //Meeting is over
+                     ///network issue, please check network connection
+                     @"NETWORK_ERROR": @(MobileRTCMeetError_NetworkError),
+                     ///failed to reconnect meeting
+                     @"RECONNECT_ERROR": @(MobileRTCMeetError_ReconnectError),
+                     ///mmr issue, please check mmr configuration
+                     @"MMR_ERROR": @(MobileRTCMeetError_MMRError),
+                     ///meeting password incorrect
+                     @"PASSWORD_ERROR": @(MobileRTCMeetError_PasswordError),
+                     ///failed to create video and audio data connection with mmr
+                     @"SESSION_ERROR": @(MobileRTCMeetError_SessionError),
+                     ///the meeting is over
                      @"MEETING_OVER": @(MobileRTCMeetError_MeetingOver),
-                     //Meeting does not exist
+                     ///the meeting does not start
+                     @"MEETING_NOT_START": @(MobileRTCMeetError_MeetingNotStart),
+                     ///the meeting does not exist
                      @"MEETING_NOT_EXIST": @(MobileRTCMeetError_MeetingNotExist),
-                     //Meeting has been locked
+                     ///the meeting has reached a maximum of participants
+                     @"USER_FULL": @(MobileRTCMeetError_MeetingUserFull),
+                     ///the mobilertc version is incompatible
+                     @"CLIENT_VERSION_INCOMPATIBLE": @(MobileRTCMeetError_MeetingClientIncompatible),
+                     ///the meeting was locked by host
                      @"MEETING_LOCKED": @(MobileRTCMeetError_MeetingLocked),
                      //Meeting Restricted
                      @"MEETING_RESTRICTED": @(MobileRTCMeetError_MeetingRestricted),
-                     //JBH Meeting Restricted
-                     @"MEETING_JBH_RESTRICTED": @(MobileRTCMeetError_MeetingJBHRestricted),
-                     
+                     ///there does not exist valid mmr
+                     @"NO_MMR": @(MobileRTCMeetError_NoMMR),
+                     ///the meeting was restricted join before host
+                     @"RESTRICTED_JBH": @(MobileRTCMeetError_MeetingRestrictedJBH),
+                     ///failed to send creat meeting command to web server
+                     @"CANNOT_EMIT_WEB_REQUEST": @(MobileRTCMeetError_CannotEmitWebRequest),
+                     ///failed to start meeting with expired token
+                     @"CANNOT_START_TOKEN_EXPIRE": @(MobileRTCMeetError_CannotStartTokenExpire),
+                     ///the user video cannot work
+                     @"VIDEO_ERROR": @(MobileRTCMeetError_VideoError),
+                     ///the user audio cannot auto start
+                     @"AUDIO_AUTO_START_ERROR": @(MobileRTCMeetError_AudioAutoStartError),
+                     ///webinar has reached its maximum
+                     @"WEBINAR_FULL": @(MobileRTCMeetError_RegisterWebinarFull),
+                     ///sign in to start the webinar
+                     @"WEBINAR_HOST_REGISTER": @(MobileRTCMeetError_RegisterWebinarHostRegister),
+                     ///join the webinar from the link
+                     @"WEBINAR_PANELIST_REGISTER": @(MobileRTCMeetError_RegisterWebinarPanelistRegister),
+                     ///host has denied your webinar registration
+                     @"WEBINAR_DENIED_EMAIL": @(MobileRTCMeetError_RegisterWebinarDeniedEmail),
+                     ///sign in with the specified account to join webinar
+                     @"WEBINAR_ENFORCE_LOGIN": @(MobileRTCMeetError_RegisterWebinarEnforceLogin),
+                     ///the certificate of ZC has been changed
+                     @"ZC_CERTIFICATE_CHANGED": @(MobileRTCMeetError_ZCCertificateChanged),
+                     ///the vanity url does not exist
+                     @"VANITY_NOT_EXIST": @(MobileRTCMeetError_VanityNotExist),
+                     ///the email address has already been register in this webinar
+                     @"JOIN_WEBINAR_WITH_SAME_EMAIL": @(MobileRTCMeetError_JoinWebinarWithSameEmail),
+                     ///failed to write config file
+                     @"WRITE_CONFIG_FILE": @(MobileRTCMeetError_WriteConfigFile),
                      //Invalid Arguments
                      @"INVALID_ARGUMENTS": @(MobileRTCMeetError_InvalidArguments),
-                     //Invalid Arguments
+                     //Invalid user type
                      @"INVALID_USER_TYPE": @(MobileRTCMeetError_InvalidUserType),
                      //Already In another ongoing meeting
                      @"IN_ANOTHER_MEETING": @(MobileRTCMeetError_InAnotherMeeting),

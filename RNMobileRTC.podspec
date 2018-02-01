@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
   s.author       = { "Ivan Vukovic" => "3.14wee@gmail.com" }
   s.platform     = :ios, "7.0"
   s.source       = { :git => "https://github.com/reactor-studio/react-native-zoom-sdk.git", :tag => "v#{s.version}" }
-  s.source_files  = "ios/RNMobileRTC/**/*.{h,m}"
+  s.source_files  = "ios/**/*.{h,m}"
   s.requires_arc = true
 
   s.dependency "React"

@@ -1,6 +1,6 @@
 {
   "name": "react-native-zoom-sdk",
-  "version": "0.15.0",
+  "version": "0.16.0",
   "description": "Zoom.us SDK bridge for React Native",
   "main": "index.js",
   "scripts": {
@@ -23,7 +23,9 @@
   "dependencies": {
     "xcode": "^1.0.0"
   },
-  "commands": {
-    "postlink": "node node_modules/react-native-zoom-sdk/scripts/postlink"
+  "rnpm": {
+    "commands": {
+      "postlink": "node node_modules/react-native-zoom-sdk/scripts/postlink"
+    }
   }
 }

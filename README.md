@@ -4,7 +4,13 @@
 ## Getting started
 
 Before you start, you should add Zoom SDK by downloading iOS and Android SDK to your project
-place **iOS SDK** in `ios/lib/` and **Android SDK** in `android` directory of your project.
+place **iOS SDK** in `ios/lib/` directory of your project.
+
+
+Or add this line to your `Podfile`
+
+`pod 'ZoomMobileRTC'`
+
 
 After that install the package with:
 

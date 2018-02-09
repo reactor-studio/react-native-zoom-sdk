@@ -1,6 +1,6 @@
 {
   "name": "react-native-zoom-sdk",
-  "version": "0.18.1",
+  "version": "0.18.2",
   "description": "Zoom.us SDK bridge for React Native",
   "main": "index.js",
   "scripts": {

@@ -54,17 +54,27 @@ public class RNMobileRTCModule extends ReactContextBaseJavaModule implements Mee
   }
 
   @ReactMethod
-  public void initialize(String sdkKey, String sdkSecret, String sdkDomain, Promise promise) {
-    ZoomSDK zoomSDK = ZoomSDK.getInstance();
-    mPromise = promise;
-
-    if (!zoomSDK.isInitialized()) {
-      zoomSDK.initialize(this.getCurrentActivity(), sdkKey, sdkSecret, sdkDomain, this);
-    } else {
-      startMeetingService();
-      promise.resolve("Success!");
-    }
+  public void initialize(final String sdkKey, final String sdkSecret, final String sdkDomain, final Promise promise) {
+    this.getCurrentActivity().runOnUiThread(new Runnable()
+    {
+			public void run()
+			{
+				initSDK(sdkKey, sdkSecret, sdkDomain, promise);
+			}
+		});
   }
+
+	private void initSDK(String sdkKey, String sdkSecret, String sdkDomain, Promise promise) {
+		ZoomSDK zoomSDK = ZoomSDK.getInstance();
+		mPromise = promise;
+
+		if (!zoomSDK.isInitialized()) {
+			zoomSDK.initialize(this.getCurrentActivity(), sdkKey, sdkSecret, sdkDomain, this);
+		} else {
+			startMeetingService();
+			promise.resolve("Success!");
+		}
+	}
 
   private void startMeetingService() {
     ZoomSDK zoomSDK = ZoomSDK.getInstance();

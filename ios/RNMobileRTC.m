@@ -68,6 +68,8 @@ RCT_EXPORT_METHOD(joinMeeting:(NSDictionary *) options resolver:(RCTPromiseResol
         return;
     
     MobileRTCMeetingService *ms = [[MobileRTC sharedRTC] getMeetingService];
+    [[[MobileRTC sharedRTC] getMeetingSettings] setAutoConnectInternetAudio:YES];
+
     if (ms)
     {
         ms.delegate = self;

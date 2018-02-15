@@ -107,6 +107,9 @@ public class RNMobileRTCModule extends ReactContextBaseJavaModule implements Mee
 		mPromise = promise;
 		
 		JoinMeetingOptions opts = new JoinMeetingOptions();
+		opts.no_dial_in_via_phone = true;
+		opts.no_disconnect_audio = true;
+
 		int ret = meetingService.joinMeeting(this.getCurrentActivity(), meetingNo, userName, meetingPassword, opts);
 	}
 	
@@ -263,8 +266,10 @@ public class RNMobileRTCModule extends ReactContextBaseJavaModule implements Mee
 			mbPendingStartMeeting = false;
 			mPromise.reject("" + errorCode);
 		}
-
-		mPromise.resolve("Success!");
+		
+		if (meetingEvent == MeetingEvent.MEETING_CONNECTED) {
+			mPromise.resolve("Success!");
+		}
 
 		return;
   }

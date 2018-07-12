@@ -109,6 +109,7 @@ public class RNMobileRTCModule extends ReactContextBaseJavaModule implements Mee
 		JoinMeetingOptions opts = new JoinMeetingOptions();
 		opts.no_dial_in_via_phone = true;
 		opts.no_disconnect_audio = true;
+		opts.no_driving_mode = true;
 
 		int ret = meetingService.joinMeeting(this.getCurrentActivity(), meetingNo, userName, meetingPassword, opts);
 	}

@@ -21,11 +21,7 @@ import com.facebook.react.common.MapBuilder;
 import us.zoom.sdk.JoinMeetingOptions;
 import us.zoom.sdk.StartMeetingOptions;
 import us.zoom.sdk.MeetingError;
-
-//
 import us.zoom.sdk.MeetingStatus;
-//
-
 import us.zoom.sdk.MeetingOptions;
 import us.zoom.sdk.MeetingService;
 import us.zoom.sdk.MeetingServiceListener;

@@ -21,7 +21,11 @@ import com.facebook.react.common.MapBuilder;
 import us.zoom.sdk.JoinMeetingOptions;
 import us.zoom.sdk.StartMeetingOptions;
 import us.zoom.sdk.MeetingError;
-import us.zoom.sdk.MeetingEvent;
+
+//
+import us.zoom.sdk.MeetingStatus;
+//
+
 import us.zoom.sdk.MeetingOptions;
 import us.zoom.sdk.MeetingService;
 import us.zoom.sdk.MeetingServiceListener;
@@ -257,18 +261,18 @@ public class RNMobileRTCModule extends ReactContextBaseJavaModule implements Mee
   }
 
   @Override
-	public void onMeetingEvent(int meetingEvent, int errorCode, int internalErrorCode) {		
-		if (meetingEvent == MeetingEvent.MEETING_CONNECT_FAILED &&
+	public void onMeetingStatusChanged(MeetingStatus meetingStatus, int errorCode, int internalErrorCode) {
+		if (meetingStatus == MeetingStatus.MEETING_STATUS_FAILED &&
 			errorCode != MeetingError.MEETING_ERROR_SUCCESS) {
 			mPromise.reject("" + errorCode);
 		}
 		
-		if (mbPendingStartMeeting && meetingEvent == MeetingEvent.MEETING_DISCONNECTED) {
+		if (mbPendingStartMeeting && meetingStatus == MeetingStatus.MEETING_STATUS_FAILED) {
 			mbPendingStartMeeting = false;
 			mPromise.reject("" + errorCode);
 		}
 		
-		if (meetingEvent == MeetingEvent.MEETING_CONNECTED) {
+		if (meetingStatus == MeetingStatus.MEETING_STATUS_INMEETING) {
 			mPromise.resolve("Success!");
 		}
 

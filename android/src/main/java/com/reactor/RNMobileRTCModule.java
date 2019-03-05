@@ -89,23 +89,23 @@ public class RNMobileRTCModule extends ReactContextBaseJavaModule implements Mee
 		String meetingNo = options.getString("meetingNumber");
     String userName = options.getString("userName");
 		String meetingPassword = options.getString("pwd");
-		
+
 		if(meetingNo.length() == 0) {
 			promise.reject(E_NO_MEETING_NUMBER, "You need to enter a scheduled meeting number.");
       return;
 		}
-		
+
 		ZoomSDK zoomSDK = ZoomSDK.getInstance();
-		
+
 		if(!zoomSDK.isInitialized()) {
 			promise.reject(E_SDK_NOT_INITIALIZED, "ZoomSDK has not been initialized successfully");
       return;
 		}
-		
+
 		MeetingService meetingService = zoomSDK.getMeetingService();
 
 		mPromise = promise;
-		
+
 		JoinMeetingOptions opts = new JoinMeetingOptions();
 		opts.no_dial_in_via_phone = true;
 		opts.no_disconnect_audio = true;
@@ -113,7 +113,7 @@ public class RNMobileRTCModule extends ReactContextBaseJavaModule implements Mee
 
 		int ret = meetingService.joinMeeting(this.getCurrentActivity(), meetingNo, userName, meetingPassword, opts);
 	}
-	
+
   @ReactMethod
 	public void startMeeting(ReadableMap options, Promise promise) {
 		String meetingNo = options.getString("meetingNumber");
@@ -121,21 +121,21 @@ public class RNMobileRTCModule extends ReactContextBaseJavaModule implements Mee
 		int userType = options.getInt("userType");
 		String userId = options.getString("userId");
 		String userToken = options.getString("userToken");
-		
+
 		if(meetingNo.length() == 0) {
 			promise.reject(E_NO_MEETING_NUMBER, "You need to enter a scheduled meeting number.");
       return;
 		}
-		
+
 		ZoomSDK zoomSDK = ZoomSDK.getInstance();
-		
+
 		if(!zoomSDK.isInitialized()) {
 			promise.reject(E_SDK_NOT_INITIALIZED, "ZoomSDK has not been initialized successfully");
       return;
 		}
-		
+
 		final MeetingService meetingService = zoomSDK.getMeetingService();
-		
+
 		if(meetingService.getMeetingStatus() != MeetingStatus.MEETING_STATUS_IDLE) {
 			long lMeetingNo = 0;
 			try {
@@ -144,16 +144,16 @@ public class RNMobileRTCModule extends ReactContextBaseJavaModule implements Mee
 				promise.reject(E_NO_MEETING_NUMBER, "Invalid meeting number: " + meetingNo);
         return;
 			}
-			
+
 			if(meetingService.getCurrentRtcMeetingNumber() == lMeetingNo) {
 				meetingService.returnToMeeting(this.getCurrentActivity());
 				return;
 			}
-			
+
 			new AlertDialog.Builder(this.getCurrentActivity())
 				.setMessage("Do you want to leave current meeting and start another?")
 				.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-					
+
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						mbPendingStartMeeting = true;
@@ -161,16 +161,16 @@ public class RNMobileRTCModule extends ReactContextBaseJavaModule implements Mee
 					}
 				})
 				.setNegativeButton("No", new DialogInterface.OnClickListener() {
-					
+
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						
+
 					}
 				})
 				.show();
 			return;
 		}
-		
+
 		mPromise = promise;
 
 		StartMeetingOptions opts = new StartMeetingOptions();
@@ -258,6 +258,10 @@ public class RNMobileRTCModule extends ReactContextBaseJavaModule implements Mee
 
   @Override
 	public void onMeetingStatusChanged(MeetingStatus meetingStatus, int errorCode, int internalErrorCode) {
+    if (mPromise == null) {
+      return;
+    }
+    
 		if (meetingStatus == MeetingStatus.MEETING_STATUS_FAILED &&
 			errorCode != MeetingError.MEETING_ERROR_SUCCESS) {
 			mPromise.reject("" + errorCode);
@@ -271,6 +275,8 @@ public class RNMobileRTCModule extends ReactContextBaseJavaModule implements Mee
 		if (meetingStatus == MeetingStatus.MEETING_STATUS_INMEETING) {
 			mPromise.resolve("Success!");
 		}
+
+    mPromise = null;
 
 		return;
   }

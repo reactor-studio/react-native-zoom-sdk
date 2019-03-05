@@ -44,7 +44,7 @@ RCT_EXPORT_METHOD(startMeeting:(NSDictionary *) options resolver:(RCTPromiseReso
     MobileRTCMeetingService *ms = [[MobileRTC sharedRTC] getMeetingService];
     if (ms){
         ms.delegate = self;
-        
+
         NSDictionary *paramDict = @{
                                     kMeetingParam_UserID:options[@"userId"],
                                     kMeetingParam_UserToken:options[@"userToken"],
@@ -54,7 +54,7 @@ RCT_EXPORT_METHOD(startMeeting:(NSDictionary *) options resolver:(RCTPromiseReso
                                     kMeetingParam_IsAppShare:options[@"appShare"],
                                     kMeetingParam_ParticipantID:options[@"participantId"],
                                     };
-        
+
         MobileRTCMeetError ret = [ms startMeetingWithDictionary:paramDict];
         NSLog(@"onMeetNow ret:%d", ret);
         _meetingResolver = resolve;
@@ -66,7 +66,7 @@ RCT_EXPORT_METHOD(joinMeeting:(NSDictionary *) options resolver:(RCTPromiseResol
 {
     if (![options[@"meetingNumber"] length])
         return;
-    
+
     MobileRTCMeetingService *ms = [[MobileRTC sharedRTC] getMeetingService];
     [[[MobileRTC sharedRTC] getMeetingSettings] setAutoConnectInternetAudio:YES];
     [[[MobileRTC sharedRTC] getMeetingSettings] disableDriveMode:YES];
@@ -181,15 +181,15 @@ RCT_EXPORT_METHOD(joinMeeting:(NSDictionary *) options resolver:(RCTPromiseResol
 
 - (void)sdkAuth
 {
-    
+
     MobileRTCAuthService *authService = [[MobileRTC sharedRTC] getAuthService];
     if (authService)
     {
         NSLog(@"jesam");
         authService.delegate = self;
-        
+
         [authService logoutRTC];
-        
+
         authService.clientKey = clientKey;
         authService.clientSecret = clientSecret;
         [authService sdkAuth];
@@ -209,7 +209,7 @@ RCT_EXPORT_METHOD(joinMeeting:(NSDictionary *) options resolver:(RCTPromiseResol
     {
         _initResolver(nil);
     }
-    
+
     _initResolver = nil;
     _initRejecter = nil;
     return;
@@ -232,13 +232,19 @@ RCT_EXPORT_METHOD(joinMeeting:(NSDictionary *) options resolver:(RCTPromiseResol
     NSLog(@"onMeetingReturn:%d, internalError:%zd", error, internalError);
     if (error != MobileRTCMeetError_Success)
     {
+        if (!_meetingRejecter) {
+            return;
+        }
         _meetingRejecter([@(error) stringValue], @"error", nil);
     }
     else
     {
+        if (!_meetingResolver) {
+            return;
+        }
         _meetingResolver(nil);
     }
-    
+
     _meetingResolver = nil;
     _meetingRejecter = nil;
     return;
@@ -247,6 +253,9 @@ RCT_EXPORT_METHOD(joinMeeting:(NSDictionary *) options resolver:(RCTPromiseResol
 - (void)onMeetingError:(NSInteger)error message:(NSString*)message
 {
     NSLog(@"onMeetingError:%zd, message:%@", error, message);
+    if (!_meetingRejecter) {
+        return;
+    }
     _meetingRejecter([@(error) stringValue], message, nil);
     _meetingRejecter = nil;
     _meetingResolver = nil;
@@ -255,15 +264,15 @@ RCT_EXPORT_METHOD(joinMeeting:(NSDictionary *) options resolver:(RCTPromiseResol
 - (void)onMeetingStateChange:(MobileRTCMeetingState)state
 {
     NSLog(@"onMeetingStateChange:%d", state);
-    
+
     MobileRTCMeetingService *ms = [[MobileRTC sharedRTC] getMeetingService];
     BOOL inAppShare = [ms isDirectAppShareMeeting] && (state == MobileRTCMeetingState_InMeeting);
-    
+
     if (state == MobileRTCMeetingState_Idle)
     {
         // TODO:
     }
-    
+
     if (state != MobileRTCMeetingState_InMeeting)
     {
         // TODO:
@@ -281,7 +290,7 @@ RCT_EXPORT_METHOD(joinMeeting:(NSDictionary *) options resolver:(RCTPromiseResol
             [ms showMobileRTCMeeting:nil];
             return;
         }
-        
+
         BOOL ret = [ms startAppShare];
         NSLog(@"Start App Share... ret:%zd", ret);
     }
@@ -289,7 +298,7 @@ RCT_EXPORT_METHOD(joinMeeting:(NSDictionary *) options resolver:(RCTPromiseResol
 
 - (void)onAppShareSplash
 {
-    
+
 }
 
 - (void)onClickedShareButton
@@ -302,7 +311,7 @@ RCT_EXPORT_METHOD(joinMeeting:(NSDictionary *) options resolver:(RCTPromiseResol
             NSLog(@"There exist an ongoing share");
             return;
         }
-        
+
         [ms hideMobileRTCMeeting:^(void){
             [ms startAppShare];
         }];
@@ -316,12 +325,12 @@ RCT_EXPORT_METHOD(joinMeeting:(NSDictionary *) options resolver:(RCTPromiseResol
 
 - (void)onJBHWaitingWithCmd:(JBHCmd)cmd
 {
-    
+
 }
 
 - (void)onClickedInviteButton:(UIViewController*)parentVC
 {
-    
+
 }
 
 - (void)onClickedDialOut:(UIViewController*)parentVC isCallMe:(BOOL)me
@@ -336,5 +345,3 @@ RCT_EXPORT_METHOD(joinMeeting:(NSDictionary *) options resolver:(RCTPromiseResol
 
 
 @end
-
-

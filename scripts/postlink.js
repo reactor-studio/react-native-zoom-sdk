@@ -7,7 +7,7 @@ const packageJson = require('../../../package.json');
 
 const frameworks = [
   'libsqlite3.tbd',
-  'libstdc++.6.0.9.tbd',
+  'libc++.tbd',
   'libz.1.2.5.tbd',
   'VideoToolbox.framework',
 ];
